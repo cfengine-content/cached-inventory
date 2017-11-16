@@ -36,10 +36,19 @@ Would produce inventory that looked like this in Mission Portal:
 
 * Installation
 
-#. Clone the repository
+1. Clone the repository
 
-#. Change into the repository and run ~make install~
+   #+BEGIN_SRC shell 
+     git clone https://github.com/cfengine-content/cached-inventory
+   #+END_SRC
+   
+2. Change into the repository and run ~make install~
 
-#. Ensure =main.cf= is included in your policy inputs (ref [[./def.json]] )
+   #+BEGIN_SRC shell 
+     cd cached-inventory
+     make install
+   #+END_SRC
+ 
+4. Ensure =main.cf= is included in your policy inputs (ref [[./def.json]] )
 
-#. Ensure =cached_inventory= is added to the bundlesequence. (ref [[./def.json]] )
+5. Ensure =cached_inventory= is added to the bundlesequence. (ref [[./def.json]] )
