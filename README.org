@@ -1,0 +1,45 @@
+#+Title: Cached Inventory
+
+This policy is designed to read data containing variables and classes tagged for
+inventory from plain files. This methodology allows expensive commands to be run
+less frequently while still reporting a consistent state to the Enterprise Hub.
+
+* Usage :ATTACH:
+:PROPERTIES:
+:ID:       d045711d-3c8a-4891-b204-d5921c742b29
+:Attachments: 2017-11-16_Selection_003_2017-11-16_14-38-06.png
+:END:
+
+NOTE: This policy does not handle cache population or expiration.
+
+To leverage this policy simply write files in the module protocol format to
+=$(cached_inventory_load.cachedir)=. All files in that directory suffixed with
+=.cache= will be read in using the module protocol.
+
+For example a cache file with these contents:
+
+#+BEGIN_SRC txt
+  ^context=bundle_to_hold_defined_vars
+  ^meta=inventory,attribute_name=Process listeing on TCP port
+  =443=httpd:443
+  =5308=cf-serverd:5308
+#+END_SRC
+
+Would produce inventory that looked like this in Mission Portal:
+
+#+DOWNLOADED: file:///home/nickanderson/Pictures/Screenshots/2017-11-16_Selection_003.png @ 2017-11-16 14:38:06
+[[file:data/d0/45711d-3c8a-4891-b204-d5921c742b29/2017-11-16_Selection_003_2017-11-16_14-38-06.png]]
+
+- Be careful that your context will not collide with another defined bundle
+  where variables may over-write each-other. Consider defining an empty bundle
+  to reserve the context.
+
+* Installation
+
+#. Clone the repository
+
+#. Change into the repository and run ~make install~
+
+#. Ensure =main.cf= is included in your policy inputs (ref [[./def.json]] )
+
+#. Ensure =cached_inventory= is added to the bundlesequence. (ref [[./def.json]] )

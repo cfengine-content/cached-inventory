@@ -1,0 +1,42 @@
+bundle agent cached_inventory
+# @brief The main entry for the policy. Handles running correct bundles in correct contexts.
+{
+  methods:
+      "Load Cached Inventory"
+        usebundle => "cached_inventory_load";
+}
+
+bundle agent cached_inventory_load
+# @brief Load cached data for inventory
+# Cached inventory is expected to be found in `cachedir`/`cache_format`
+# Cache formats supported: `module_protocol`
+{
+
+  vars:
+      "cachedir" string => "$(sys.statedir)/cfengine_content/cached_inventory";
+      "cache_formats" slist => { "module_protocol" };
+
+      "$(cache_formats)_candidates"
+        slist => lsdir( "$(cachedir)/$(cache_formats)/", "[^\.|\.\.].*.cache", "false" ),
+        if => isdir( "$(cachedir)/$(cache_formats)" ); # Avoid errors if the dir doesn't yet exist
+
+  files:
+
+      # The cache directory must exist
+      "$(cachedir)/." create => "true";
+      "$(cachedir)/$(cache_formats)/." create => "true";
+
+  commands:
+
+    "$(paths.cat)"
+      args => "$(cachedir)/$(cache_formats)/$($(cache_formats)_candidates)",
+      module => "true";
+
+  reports:
+
+    "DEBUG|DEBUG_$(this.bundle)"::
+
+      "Loading cached inventory from $(cachedir)/$(cache_formats)/$($(cache_formats)_candidates)";
+      "$(cachedir)/$(cache_formats)/$($(cache_formats)_candidates) content:"
+        printfile => default:cat( "$(cachedir)/$(cache_formats)/$($(cache_formats)_candidates)" );
+}

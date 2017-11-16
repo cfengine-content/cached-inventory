@@ -1,0 +1,9 @@
+{
+    "inputs": [
+        "services/cached-inventory/policy/main.cf"
+    ],
+    "vars": {
+        "control_common_bundlesequence_end": [ "cached_inventory" ]
+    }
+
+}
